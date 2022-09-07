@@ -24,10 +24,29 @@ public class SpawnManager : MonoBehaviour
    private float[] m_EnemySpawnTimers;
    #endregion
 
+   #region Spawning Methods
+   public void StartSpawning() {
+      for (int i = 0; i < m_EnemyTypes.Length; i++) {
+         StartCoroutine(Spawn(i));
+      }
+   }
+
+   private IEnumerator Spawn(int enemyID) {
+      EnemySpawnInfo info = m_EnemyTypes[enemyID];
+      yield return new WaitForSeconds(info.FirstSpawnTime);
+      Instantiate(info.EnemyPrefab);
+      while (true) {
+         yield return new WaitForSeconds(info.SpawnRate);
+         Instantiate(info.EnemyPrefab);
+      }
+   }
+   #endregion
+
    #region First Time Initialization and Set Up
    private void Awake()
    {
       // Initialize the spawn timers using the FirstSpawnTime variable
+      StartSpawning();
    }
    #endregion
 
